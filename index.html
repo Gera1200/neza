@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Antigüedad Laboral</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Antigüedad Laboral</h1>
+        
+        <form id="recordForm">
+            <label for="terminacionClave">Terminación Clave:</label>
+            <input type="text" id="terminacionClave" maxlength="6" required>
+
+            <label for="fechaIngreso">Fecha de Ingreso:</label>
+            <input type="date" id="fechaIngreso" required>
+
+            <label for="fechaEgreso">Fecha de Egreso:</label>
+            <input type="date" id="fechaEgreso" required>
+
+            <label for="tipo">Tipo:</label>
+            <select id="tipo">
+                <option value="1">Activo</option>
+                <option value="2">Licencia</option>
+            </select>
+
+            <button type="button" onclick="agregarRegistro()">Agregar</button>
+            <button type="button" onclick="calcularAntiguedad()">Calcular</button>
+        </form>
+
+        <h2>Registros</h2>
+        <table id="tablaRegistros">
+            <tr>
+                <th>Terminación Clave</th>
+                <th>Fecha de Ingreso</th>
+                <th>Fecha de Egreso</th>
+                <th>Tipo</th>
+            </tr>
+        </table>
+
+        <div id="resultado">
+            <h2>Resultado</h2>
+            <p id="resultadoTexto">Años: 0, Meses: 0, Días: 0</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
