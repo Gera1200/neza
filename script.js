@@ -51,18 +51,60 @@ function limpiarFormulario() {
     document.getElementById("tipo").value = "1";
 }
 
+// Función para calcular años, meses y días de antigüedad considerando años bisiestos
 function calcularAntiguedad() {
-    fetch('/antiguedad', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(registros)
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById("resultadoTexto").textContent = 
-            `Años: ${data.years}, Meses: ${data.months}, Días: ${data.days}`;
-    })
-    .catch(error => console.error('Error:', error));
+    let totalDias = 0;
+    let totalDiasLicencia = 0;
+
+    registros.forEach(registro => {
+        const fechaInicio = new Date(registro.fechaIngreso);
+        const fechaFin = new Date(registro.fechaEgreso);
+        const diasDiferencia = calcularDiasDiferencia(fechaInicio, fechaFin);
+
+        if (registro.tipo === "1") {
+            totalDias += diasDiferencia;
+        } else {
+            totalDiasLicencia += diasDiferencia;
+        }
+    });
+
+    const antiguedad = calcularAniosMesesDias(totalDias);
+    const licencia = calcularAniosMesesDias(totalDiasLicencia);
+
+    document.getElementById("resultadoTexto").textContent = 
+        `Antigüedad: ${antiguedad.years} años, ${antiguedad.months} meses, ${antiguedad.days} días | 
+        Licencia: ${licencia.years} años, ${licencia.months} meses, ${licencia.days} días`;
+}
+
+// Función para calcular la diferencia en días entre dos fechas y considerar años bisiestos
+function calcularDiasDiferencia(fechaInicio, fechaFin) {
+    const unDia = 24 * 60 * 60 * 1000;
+    let diasDiferencia = Math.round((fechaFin - fechaInicio) / unDia);
+
+    for (let year = fechaInicio.getFullYear(); year <= fechaFin.getFullYear(); year++) {
+        if (esBisiesto(year)) {
+            diasDiferencia++; // Agrega un día por cada año bisiesto entre las fechas
+        }
+    }
+
+    return diasDiferencia;
+}
+
+// Función para validar si un año es bisiesto
+function esBisiesto(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+}
+
+// Convierte el total de días en años, meses y días
+function calcularAniosMesesDias(totalDias) {
+    const diasPorMes = 30;
+    const diasPorAnio = 365;
+
+    const years = Math.floor(totalDias / diasPorAnio);
+    totalDias %= diasPorAnio;
+
+    const months = Math.floor(totalDias / diasPorMes);
+    const days = totalDias % diasPorMes;
+
+    return { years, months, days };
 }
